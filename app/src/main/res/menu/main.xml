@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.android.sunshine.app.MainActivity">
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_refresh"
+        android:title="@string/action_refresh"
+        android:orderInCategory="10"
+        app:showAsAction="never" />
+    <item
+    android:id="@+id/action_store_to_db"
+    android:title="@string/action_store_to_db"
+    android:orderInCategory="20"
+    app:showAsAction="never" />
+    <item
+        android:id="@+id/action_backup_db"
+        android:title="@string/action_backup_db"
+        android:orderInCategory="30"
+        app:showAsAction="never" />
+</menu>
