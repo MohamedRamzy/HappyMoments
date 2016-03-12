@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,8 +45,17 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
     private final String LOG_TAG = MomentsFragment.class.getSimpleName();
 
     private MomentsArrayAdapter mMemoryArrayAdapter;
+    private ListView mMomentsListView;
+    private TextView mNoMomentsTextView;
 
     private ShareActionProvider mShareActionProvider;
+
+    private TextView mNamesTagTextView;
+
+    private TextView mMainMomentTextView;
+    private TextView mMainMomentDateTextView;
+    private Moment currentRandomMoment;
+
     private Button mRandomMomentBtn;
     private Button mAddMomentBtn;
     private static int removePos = -1;
@@ -67,16 +77,15 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
         mMemoryArrayAdapter = new MomentsArrayAdapter(getActivity(),R.layout.list_item_forecast);
-        final ListView mMomentsListView = (ListView) rootView.findViewById(R.id.listview_forecast);
+        mMomentsListView = (ListView) rootView.findViewById(R.id.listview_moments);
         mMomentsListView.setAdapter(mMemoryArrayAdapter);
         mMomentsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int pos, long l) {
                 //Log.v(LOG_TAG,"onItemLongClick-> pos : "+pos +", l : "+l); // both pos & l are the array/listview index
                 removePos = pos;
-                String[] items = {"Edit","Delete"};
+                String[] items = {"Edit", "Delete"};
                 AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
                 build.setTitle("Are you sure you want to edit/delete this moment !?");
                 build.setItems(items, new DialogInterface.OnClickListener() {
@@ -88,19 +97,9 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
                             //Log.v(LOG_TAG,"_id = "+_id);
                             getActivity().getContentResolver().delete(MomentsContentProvider.CONTENT_URI, "_id=?", new String[]{String.valueOf(_id)});
                             Toast.makeText(getActivity(), "Moment successfully deleted", Toast.LENGTH_LONG).show();
-                            /*
-                                Moment[] newMoments = new Moment[moments.length - 1];
-                                int j = 0;
-                                for (int i = 0; i < moments.length; i++) {
-                                    if (i == removePos) continue;
-                                    newMoments[j] = moments[i];
-                                    j++;
-                                }
-                                moments = newMoments;
-                            */
-                        }else { // edit
+                        } else { // edit
                             removePos = -1;
-                            Log.v(LOG_TAG,"onItemLongClick-> EDIT"); // both pos & l are the array/listview index
+                            Log.v(LOG_TAG, "onItemLongClick-> EDIT"); // both pos & l are the array/listview index
                             Toast.makeText(getActivity(), "Editing functionality under development .. ", Toast.LENGTH_LONG).show();
                         }
 //                        ((MainActivity) getActivity()).storeMomentsArray();
@@ -112,6 +111,14 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
 
         });
 
+        mNamesTagTextView = (TextView) rootView.findViewById(R.id.names_tag_text_view);
+        mNamesTagTextView.setText(PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(getString(R.string.pref_names_key),getString(R.string.pref_names_default)));
+
+        mMainMomentTextView = (TextView) rootView.findViewById(R.id.main_moment_textview);
+        mMainMomentDateTextView = (TextView) rootView.findViewById(R.id.main_moment_date_textView);
+//        mCurrentRandomLayout = (LinearLayout) rootView.findViewById(R.id.current_random_layout);
+
+        mNoMomentsTextView = (TextView) rootView.findViewById(R.id.no_moments_text_view);
 
         mAddMomentBtn = (Button) rootView.findViewById(R.id.add_btn);
         mRandomMomentBtn = (Button) rootView.findViewById(R.id.random_moment_btn);
@@ -128,9 +135,15 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        mMainMomentTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(currentRandomMoment != null)
+                    ((Callback) getActivity()).onItemSelected(currentRandomMoment);
+            }
+        });
         return rootView;
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -138,12 +151,12 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
         inflater.inflate(R.menu.main, menu);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_refresh){
-            updateMomentsList();
+//            updateMomentsList();
+            showRandomMoment();
             return true;
         }else if (item.getItemId() == R.id.action_settings) {
             startActivity(new Intent(getActivity(), SettingsActivity.class));
@@ -160,6 +173,51 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.add_btn:
+                Intent intent = new Intent(getActivity(), AddMomentActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.random_moment_btn:
+                int index = getRandomIndex();
+                Moment randomMom = moments[index];
+                ((Callback) getActivity()).onItemSelected(randomMom);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void updateUI(){
+        if(mMemoryArrayAdapter.getCount() == 0){
+            mNoMomentsTextView.setVisibility(View.VISIBLE);
+            mMomentsListView.setVisibility(View.GONE);
+
+            mMainMomentTextView.setText("Let's add some happy moments .. ");
+            mMainMomentDateTextView.setText("");
+        }else{
+            mNoMomentsTextView.setVisibility(View.GONE);
+            mMomentsListView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void showRandomMoment(){
+        if(mMemoryArrayAdapter!= null && mMemoryArrayAdapter.getCount() > 0) {
+            int index = getRandomIndex();
+            currentRandomMoment = mMemoryArrayAdapter.getItem(index);
+
+            int MAXLEN = 200;
+            if(currentRandomMoment.getMoment().length() < MAXLEN) {
+                mMainMomentTextView.setText(currentRandomMoment.getMoment());
+            }else {
+                mMainMomentTextView.setText(currentRandomMoment.getMoment().substring(0, MAXLEN) + "  ...");
+            }
+            mMainMomentDateTextView.setText(currentRandomMoment.getDay());
+        }
     }
 
     public void backupDatabaseToSD() {
@@ -202,8 +260,6 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
         asyncTask.execute();
 
     }
-
-
 
     private static boolean isExternalStorageReadOnly() {
         String extStorageState = Environment.getExternalStorageState();
@@ -253,29 +309,24 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         updateMomentsList();
+        updateUI();
+        if(currentRandomMoment == null)
+            showRandomMoment();
     }
 
 
     public void updateMomentsList(){
-        FetchMomentTask fetchMomentTask = new FetchMomentTask(getActivity(),mMemoryArrayAdapter);
-        fetchMomentTask.execute();
-    }
+        /*FetchMomentTask fetchMomentTask = new FetchMomentTask(getActivity(),mMemoryArrayAdapter);
+        fetchMomentTask.execute();*/
+        moments = ((MainActivity)getActivity()).loadMomentsSQLiteDB(); // stored randomly
+        if (mMemoryArrayAdapter != null) {
+            mMemoryArrayAdapter.clear();
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.add_btn:
-                Intent intent = new Intent(getActivity(), AddMomentActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.random_moment_btn:
-                int index = getRandomIndex();
-                Moment randomMom = moments[index];
-                ((Callback) getActivity()).onItemSelected(randomMom);
-                break;
-            default:
-                break;
+            for(Moment s : moments) {
+                mMemoryArrayAdapter.add(s);
+            }
         }
+        mMemoryArrayAdapter.notifyDataSetChanged();
     }
 
     public int getRandomIndex(){
@@ -292,7 +343,7 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
 
         public ViewHolder(View convertView) {
             this.momentIcon = (ImageView) convertView.findViewById(R.id.weather_imageView);
-            this.momentText = (TextView) convertView.findViewById(R.id.weather_day_textview);
+            this.momentText = (TextView) convertView.findViewById(R.id.main_moment_textview);
             this.momentDay = (TextView) convertView.findViewById(R.id.weather_status_textView);
             this.maxTemp = (TextView) convertView.findViewById(R.id.weather_max_temp_textView);
             this.minTemp = (TextView) convertView.findViewById(R.id.weather_min_temp_textView);
@@ -310,7 +361,8 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
         }
         @Override
         public int getItemViewType(int position) {
-            return (position == 0)? VIEW_TYPE_RANDOM: VIEW_TYPE_OTHER_MOMENT;
+//            return (position == 0)? VIEW_TYPE_RANDOM: VIEW_TYPE_OTHER_MOMENT;
+            return VIEW_TYPE_OTHER_MOMENT;
         }
 
         @Override
@@ -381,19 +433,20 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
             if (mMomentsArrayAdapter != null) {
                 mMomentsArrayAdapter.clear();
 
-                // randomly select one and show it first.
+                /*// randomly select one and show it first.
                 int index = getRandomIndex();
                 if(index < moments.length) {
                     Moment randomMom = moments[index];
                     Moment tmp = moments[0];
                     moments[0] = randomMom;
                     moments[index] = tmp;
-                }
+                }*/
                 for(Moment s : moments) {
                     mMomentsArrayAdapter.add(s);
                 }
             }
         }
+
 
         @Override
         protected Void doInBackground(Void... voids) {

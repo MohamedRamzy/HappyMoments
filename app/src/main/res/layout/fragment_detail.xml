@@ -26,7 +26,7 @@
             android:layout_height="40px" />
 
         <TextView
-            android:id="@+id/weather_day_textview"
+            android:id="@+id/main_moment_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Today 10 Jan"

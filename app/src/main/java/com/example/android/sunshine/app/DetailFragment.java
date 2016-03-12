@@ -47,7 +47,7 @@ public class DetailFragment extends Fragment {
 
         public ViewHolder(View convertView) {
             this.weatherIcon = (ImageView) convertView.findViewById(R.id.weather_imageView);
-            this.day = (TextView) convertView.findViewById(R.id.weather_day_textview);
+            this.day = (TextView) convertView.findViewById(R.id.main_moment_textview);
             this.weatherStatsText = (TextView) convertView.findViewById(R.id.weather_status_textView);
 
         }

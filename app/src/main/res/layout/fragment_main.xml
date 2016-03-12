@@ -8,9 +8,95 @@
     android:orientation="vertical">
     <!--android:paddingTop="@dimen/activity_vertical_margin"-->
 
+    <TextView
+        android:id="@+id/names_tag_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="M &amp; M"
+        android:fontFamily="sans-serif-condensed"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
 
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/current_random_layout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/moments_red_dark"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:paddingLeft="60dp">
+
+            <TextView
+                android:id="@+id/main_moment_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Moment"
+                android:textColor="@color/white"
+                android:fontFamily="sans-serif-condensed"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textSize="22sp"
+                android:layout_weight="2"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3">
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <ImageView
+                        android:id="@+id/weather_imageView"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/heart_logo" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/main_moment_date_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textAppearance="?android:textAppearanceLarge"
+                    android:textSize="22sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/no_moments_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:text="There is no moments .. lets add some!"
+        android:gravity="center"
+        android:visibility="gone"/>
     <ListView
-        android:id="@+id/listview_forecast"
+        android:id="@+id/listview_moments"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="left|top"

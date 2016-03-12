@@ -9,17 +9,18 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/action_refresh"
-        android:title="@string/action_refresh"
         android:orderInCategory="10"
+        android:icon="@drawable/reload"
+        android:title="@string/action_refresh"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_store_to_db"
+        android:orderInCategory="20"
+        android:title="@string/action_store_to_db"
         app:showAsAction="never" />
     <item
-    android:id="@+id/action_store_to_db"
-    android:title="@string/action_store_to_db"
-    android:orderInCategory="20"
-    app:showAsAction="never" />
-    <item
         android:id="@+id/action_backup_db"
-        android:title="@string/action_backup_db"
         android:orderInCategory="30"
+        android:title="@string/action_backup_db"
         app:showAsAction="never" />
 </menu>

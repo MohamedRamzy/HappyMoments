@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * Created by mmahfouz on 1/27/2016.
  */
-public class Moment implements Parcelable, Serializable{
+public class Moment implements Parcelable, Serializable, Comparable<Moment>{
 
 
 
@@ -80,4 +80,37 @@ public class Moment implements Parcelable, Serializable{
 
     }
 
+
+    @Override
+    public String toString() {
+        return this.day;
+    }
+
+    @Override
+    public int compareTo(Moment m) {
+        String []sp1 = this.getDay().split("/");
+        String []sp2 = m.getDay().split("/");
+        // years
+        if(Integer.parseInt(sp1[2]) < Integer.parseInt(sp2[2])){
+            return -1;
+        }else if(Integer.parseInt(sp1[2]) > Integer.parseInt(sp2[2])){
+            return 1;
+        }else{
+            // month
+            if(Integer.parseInt(sp1[1]) < Integer.parseInt(sp2[1])){
+                return -1;
+            }else if(Integer.parseInt(sp1[1]) > Integer.parseInt(sp2[1])){
+                return 1;
+            }else{
+                // day
+                if(Integer.parseInt(sp1[0]) < Integer.parseInt(sp2[0])){
+                    return -1;
+                }else if(Integer.parseInt(sp1[0]) > Integer.parseInt(sp2[0])){
+                    return 1;
+                }else{
+                    return 1;
+                }
+            }
+        }
+    }
 }

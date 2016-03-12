@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Arrays;
 
 
 public class MainActivity extends ActionBarActivity implements MomentsFragment.Callback{
@@ -44,6 +45,7 @@ public class MainActivity extends ActionBarActivity implements MomentsFragment.C
             pup[i++] = moment;
 //            Log.v(LOG_TAG,moment.get_id()+"");
         }
+        Arrays.sort(pup);
         return pup;
     }
 

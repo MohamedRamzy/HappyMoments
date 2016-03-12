@@ -15,7 +15,7 @@
         android:paddingLeft="60dp">
 
         <TextView
-            android:id="@+id/weather_day_textview"
+            android:id="@+id/main_moment_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Today"

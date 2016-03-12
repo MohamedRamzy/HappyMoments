@@ -2,8 +2,10 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/sunshine_blue</item>
-        <item name="colorPrimaryDark">@color/sunshine_dark_blue</item>
+        <!--<item name="colorPrimary">@color/sunshine_blue</item>-->
+        <item name="colorPrimary">@color/moments_red_light</item>
+        <!--<item name="colorPrimaryDark">@color/sunshine_dark_blue</item>-->
+        <item name="colorPrimaryDark">@color/moments_red_dark</item>
         <!-- Customize your theme here. -->
     </style>
 
