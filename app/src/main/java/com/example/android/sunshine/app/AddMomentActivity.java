@@ -30,6 +30,8 @@ public class AddMomentActivity extends ActionBarActivity implements View.OnClick
 
         mMomentText = (EditText)findViewById(R.id.moment_text);
         mMomentDate = (EditText)findViewById(R.id.moment_date);
+        // default date of the date of the recent moment
+        mMomentDate.setText(MomentsFragment.moments[MomentsFragment.moments.length-1].getDay());
         mAddBtn = (Button)findViewById(R.id.add_moment_btn);
 
         mAddBtn.setOnClickListener(this);
@@ -41,13 +43,24 @@ public class AddMomentActivity extends ActionBarActivity implements View.OnClick
         switch (view.getId()){
             case R.id.add_moment_btn:
 //                addMomentToArray(mMomentText.getText().toString(), mMomentDate.getText().toString(), 500);
-                addMomentToDB(mMomentText.getText().toString(),mMomentDate.getText().toString(),500);
-                this.finish();
+                if(validMoment(mMomentText.getText().toString(), mMomentDate.getText().toString())) {
+                    addMomentToDB(mMomentText.getText().toString(), mMomentDate.getText().toString(), 500);
+                    this.finish();
+                }else{
+                    Utility.showErrorMessage(this,"Alert","Please enter a valid moment/date");
+                }
                 break;
             default:
                 break;
         }
     }
+
+    private boolean validMoment(String moment,String date){
+        if(moment == null || moment.equals("") || date == null || date.equals(""))
+            return false;
+        return true;
+    }
+
     public void addMomentToArray(String momentText, String momentDate, int momentIcon){
         //Log.v("AddMoment", getApplicationContext().getFilesDir().getAbsolutePath());
         ArrayList<Moment> list = new ArrayList<Moment>();

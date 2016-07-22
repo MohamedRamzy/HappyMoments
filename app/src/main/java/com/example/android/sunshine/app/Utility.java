@@ -15,7 +15,9 @@
  */
 package com.example.android.sunshine.app;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
@@ -26,6 +28,18 @@ import java.util.Date;
 
 public class Utility {
 
+
+    public static void showErrorMessage(Context context, String title, String message){
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
 
     public static String getPreferredLocation(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

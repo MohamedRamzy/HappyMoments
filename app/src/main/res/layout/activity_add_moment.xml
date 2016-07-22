@@ -11,9 +11,10 @@
         android:layout_height="wrap_content"
         android:text="Moment"
         android:id="@+id/textView"
-        android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/mediumfont"
+        android:layout_gravity="center_horizontal"/>
 
     <EditText
         android:id="@+id/moment_text"
@@ -24,23 +25,33 @@
         android:layout_margin="30dp"
         android:minLines="5" />
 
-    <TextView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Date"
-        android:id="@+id/textView2"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:textColor="@android:color/white" />
+        android:gravity="center"
+        android:layout_gravity="center_horizontal">
 
-    <EditText
-        android:id="@+id/moment_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="date"
-        android:ems="10"
-        android:layout_margin="30dp"
-        android:layout_gravity="center" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:id="@+id/textView2"
+            android:layout_marginLeft="20dp"
+            android:textSize="@dimen/mediumfont"
+            android:textColor="@android:color/white"
+            />
+
+        <EditText
+            android:id="@+id/moment_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="date"
+            android:ems="10"
+            android:layout_margin="30dp"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/add_moment_btn"
