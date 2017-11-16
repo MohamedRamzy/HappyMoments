@@ -1,8 +1,10 @@
 package com.example.android.sunshine.app;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +15,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,7 +27,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
@@ -35,7 +41,11 @@ import com.example.android.sunshine.app.provider.MomentsContentProvider;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.channels.FileChannel;
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 /**
  * Created by mmahfouz on 1/8/2016.
@@ -47,6 +57,10 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
     private MomentsArrayAdapter mMemoryArrayAdapter;
     private ListView mMomentsListView;
     private TextView mNoMomentsTextView;
+    private EditText mSearchTextView;
+    private LinearLayout mNoramlButtonsLayout;
+    private LinearLayout mSearchButtonLayout;
+    private Button  mBackBtn;
 
     private ShareActionProvider mShareActionProvider;
 
@@ -103,7 +117,7 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
                             Toast.makeText(getActivity(), "Editing functionality under development .. ", Toast.LENGTH_LONG).show();
                         }
 //                        ((MainActivity) getActivity()).storeMomentsArray();
-                        updateMomentsList();
+                        resetMomentsList();
                     }
                 }).create().show();
                 return true; // I handled it
@@ -138,12 +152,50 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
         mMainMomentTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(currentRandomMoment != null)
+                if (currentRandomMoment != null)
                     ((Callback) getActivity()).onItemSelected(currentRandomMoment);
+            }
+        });
+
+        mSearchTextView = (EditText) rootView.findViewById(R.id.search_text);
+        mSearchTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // show a back button instead of 'Add/show random'
+                mNoramlButtonsLayout.setVisibility(View.GONE);
+                mSearchButtonLayout.setVisibility(View.VISIBLE);
+                mBackBtn.setVisibility(View.VISIBLE);
+                searchMomentsByKey(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        mNoramlButtonsLayout = (LinearLayout) rootView.findViewById(R.id.buttons_layout);
+        mSearchButtonLayout = (LinearLayout) rootView.findViewById(R.id.back_btn_layout);
+        mBackBtn = (Button) mSearchButtonLayout.findViewById(R.id.back_btn);
+        mBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                mSearchTextView.setText("");
+                mNoramlButtonsLayout.setVisibility(View.VISIBLE);
+                mSearchButtonLayout.setVisibility(View.GONE);
+                mBackBtn.setVisibility(View.GONE);
+                resetMomentsList();
             }
         });
         return rootView;
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -155,7 +207,7 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_refresh){
-//            updateMomentsList();
+//            resetMomentsList();
             showRandomMoment();
             return true;
         }else if (item.getItemId() == R.id.action_settings) {
@@ -165,6 +217,7 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
             // store the values to the db
 //            Toast.makeText(getActivity(), "Storing moments .. ", Toast.LENGTH_LONG).show();
 //            storeMomentsToSQLiteDB();
+            storeMomentsToExcel();
             return true;
         }else if(item.getItemId() == R.id.action_backup_db) {
             // store the moments to a backup database file
@@ -173,6 +226,10 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void storeMomentsToExcel() {
+        new CSVExporter().execute();
     }
 
     @Override
@@ -308,14 +365,14 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
 
     public void onResume() {
         super.onResume();
-        updateMomentsList();
+        resetMomentsList();
         updateUI();
         if(currentRandomMoment == null)
             showRandomMoment();
     }
 
 
-    public void updateMomentsList(){
+    public void resetMomentsList(){
         /*FetchMomentTask fetchMomentTask = new FetchMomentTask(getActivity(),mMemoryArrayAdapter);
         fetchMomentTask.execute();*/
         moments = ((MainActivity)getActivity()).loadMomentsSQLiteDB(); // stored randomly
@@ -324,6 +381,21 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
 
             for(Moment s : moments) {
                 mMemoryArrayAdapter.add(s);
+            }
+        }
+        mMemoryArrayAdapter.notifyDataSetChanged();
+    }
+
+    public void searchMomentsByKey(String key){
+
+        //moments = ((MainActivity)getActivity()).loadMomentsSQLiteDB();
+        if (mMemoryArrayAdapter != null) {
+            mMemoryArrayAdapter.clear();
+
+            for (Moment s : moments) {
+                if (s.getMoment().contains(key) || s.getDay().contains(key)) {
+                    mMemoryArrayAdapter.add(s);
+                }
             }
         }
         mMemoryArrayAdapter.notifyDataSetChanged();
@@ -455,6 +527,71 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
             return null;
         }
     }
+
+
+    public class CSVExporter extends AsyncTask<String ,String, String> {
+        private final ProgressDialog dialog = new ProgressDialog(getActivity());
+        @Override
+        protected void onPreExecute() {
+            this.dialog.setMessage("Exporting database...");
+            this.dialog.show();
+        }
+
+        protected String doInBackground(final String... args){
+            File sd = new File(Environment.getExternalStorageDirectory(), "");
+
+            if (!isExternalStorageAvailable() || isExternalStorageReadOnly()) {
+                return null;
+            }
+            if (sd.canWrite()) {
+
+                File file = new File(sd, "HappyMomentsBackup_" + System.currentTimeMillis() + ".csv");
+                try {
+
+                    file.createNewFile();
+                    CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
+
+                    // The Data
+                    // Headers
+                    String headlines[] = {"Date", "Moment"};
+                    csvWrite.writeNext(headlines);
+
+                    // Rows
+                    for (Moment moment : moments) {
+                        Log.v("day",moment.getDay());
+                        Log.v("moment",moment.getMoment().replace("\n"," .. "));
+                        String row[] = {moment.getDay(), moment.getMoment().replace("\n"," .. ").replace("\"","'")};
+                        csvWrite.writeNext(row);
+                    }
+
+                    csvWrite.close();
+                    return "";
+                } catch (IOException e) {
+                    Log.e("MainActivity", e.getMessage(), e);
+                    return "failed";
+                }
+            }else {
+                return "failed";
+            }
+        }
+
+        @SuppressLint("NewApi")
+        @Override
+        protected void onPostExecute(final String success) {
+
+            if (this.dialog.isShowing()){
+                this.dialog.dismiss();
+            }
+            if (success.isEmpty()){
+                Toast.makeText(getActivity(), "Export successful!", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(getActivity(), "Export failed!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
 
     public interface Callback {
         /**

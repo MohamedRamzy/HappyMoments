@@ -5,10 +5,10 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="action_refresh">Refresh</string>
-    <string name="action_store_to_db">Store to DB</string>
+    <string name="action_store_to_db">Store DB to Excel</string>
     <string name="action_backup_db">Backup to SD</string>
     <string name="action_share">Share</string>
-    <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_detail">Moment Details</string>
 
     <string name="pref_names_label">Names</string>
     <string name="pref_names_key">names</string>

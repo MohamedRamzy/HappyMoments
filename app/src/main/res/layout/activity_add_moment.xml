@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#62addf"
+    android:background="#b4fdb4bd"
     android:baselineAligned="false">
 
     <TextView
@@ -12,7 +12,7 @@
         android:text="Moment"
         android:id="@+id/textView"
         android:layout_marginTop="20dp"
-        android:textColor="@android:color/white"
+        android:textColor="#b4f4122e"
         android:textSize="@dimen/mediumfont"
         android:layout_gravity="center_horizontal"/>
 
@@ -39,7 +39,7 @@
             android:id="@+id/textView2"
             android:layout_marginLeft="20dp"
             android:textSize="@dimen/mediumfont"
-            android:textColor="@android:color/white"
+            android:textColor="#b4f4122e"
             />
 
         <EditText
@@ -59,7 +59,7 @@
         android:layout_height="@dimen/button_height"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/layout_margin"
-        android:background="@drawable/button_default"
+        android:background="#b4f4122e"
         android:text="Add"
         android:textColor="@android:color/white"
         android:textSize="@dimen/mediumfont" />

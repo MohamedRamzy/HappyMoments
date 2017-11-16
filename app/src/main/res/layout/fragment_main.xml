@@ -21,6 +21,33 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp" />
 
+    <LinearLayout
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search"
+            android:textSize="15sp"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:gravity="start"
+            android:textColor="@color/black"/>
+        <EditText
+            android:id="@+id/search_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginRight="30dp"/>
+    </LinearLayout>
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/current_random_layout"
         android:orientation="vertical"
@@ -103,6 +130,7 @@
         android:layout_weight="2"/>
 
     <LinearLayout
+        android:id="@+id/buttons_layout"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -122,6 +150,22 @@
             android:layout_height="match_parent"
             android:text="+"
             android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:id="@+id/back_btn_layout"
+        android:visibility="gone"
+        android:gravity="bottom">
+
+        <Button
+            android:id="@+id/back_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Back" />
     </LinearLayout>
 
 </LinearLayout>

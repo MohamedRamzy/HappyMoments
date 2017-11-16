@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +28,7 @@ public class AddMomentActivity extends ActionBarActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_moment);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mMomentText = (EditText)findViewById(R.id.moment_text);
         mMomentDate = (EditText)findViewById(R.id.moment_date);
@@ -36,6 +38,14 @@ public class AddMomentActivity extends ActionBarActivity implements View.OnClick
 
         mAddBtn.setOnClickListener(this);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
