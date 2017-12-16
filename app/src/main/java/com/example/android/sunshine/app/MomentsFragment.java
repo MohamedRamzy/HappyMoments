@@ -224,6 +224,11 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
             Toast.makeText(getActivity(), "Backup DB .. ", Toast.LENGTH_LONG).show();
             backupDatabaseToSD();
             return true;
+        }else if(item.getItemId() == R.id.action_load_db) {
+            // store the moments to a backup database file
+            Toast.makeText(getActivity(), "Loading DB .. ", Toast.LENGTH_LONG).show();
+            loadDatabaseFromSD();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -316,6 +321,51 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
         };
         asyncTask.execute();
 
+    }
+
+    public void loadDatabaseFromSD() {
+        AsyncTask asyncTask = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                try {
+                    File sd = Environment.getExternalStorageDirectory();
+                    File data = Environment.getDataDirectory();
+
+                    if (!isExternalStorageAvailable() || isExternalStorageReadOnly()) {
+                        return null;
+                    }
+
+                    String importDBPath = "HappyMoments/" + MomentsContentProvider.DATABASE_NAME;
+                    String currentDBPath = "data/" + getActivity().getPackageName() + "/databases/" + MomentsContentProvider.DATABASE_NAME + "";
+                    //Log.v(LOG_TAG,currentDBPath);
+                    File importDB = new File(sd, importDBPath);
+                    File currentDB = new File(data, currentDBPath);
+                    //Log.v(LOG_TAG,backupDB.getAbsolutePath());
+                    if (importDB.exists()/* && currentDB.exists()*/) {
+                        FileChannel src = new FileInputStream(importDB).getChannel();
+                        FileChannel dst = new FileOutputStream(currentDB).getChannel();
+                        dst.transferFrom(src, 0, src.size());
+                        src.close();
+                        dst.close();
+                    }
+                    //File[] list = currentDB.getParentFile().listFiles();
+                    //for (File f : list) {
+                    //    Log.v("file", f.getAbsolutePath());
+                    //}
+                } catch (Exception e) {
+                    Log.v(LOG_TAG, e.getMessage());
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                super.onPostExecute(o);
+                Toast.makeText(getActivity(), "DB loaded successfully!", Toast.LENGTH_LONG).show();
+            }
+        };
+        asyncTask.execute();
     }
 
     private static boolean isExternalStorageReadOnly() {

@@ -23,4 +23,9 @@
         android:orderInCategory="30"
         android:title="@string/action_backup_db"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_load_db"
+        android:orderInCategory="30"
+        android:title="@string/action_load_db"
+        app:showAsAction="never" />
 </menu>

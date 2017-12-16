@@ -7,6 +7,7 @@
     <string name="action_refresh">Refresh</string>
     <string name="action_store_to_db">Store DB to Excel</string>
     <string name="action_backup_db">Backup to SD</string>
+    <string name="action_load_db">Load DB from SD</string>
     <string name="action_share">Share</string>
     <string name="title_activity_detail">Moment Details</string>
 
