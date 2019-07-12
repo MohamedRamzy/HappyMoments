@@ -225,9 +225,20 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
             backupDatabaseToSD();
             return true;
         }else if(item.getItemId() == R.id.action_load_db) {
-            // store the moments to a backup database file
-            Toast.makeText(getActivity(), "Loading DB .. ", Toast.LENGTH_LONG).show();
-            loadDatabaseFromSD();
+            // load moments from backup file in storage
+            String[] items = {"Yes (from /HappyMoments/moments.sqlite)", "No"};
+            AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
+            build.setTitle("Are you sure you want to load moments from storage ?");
+            build.setItems(items, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int index) {
+                    if (index == 0) {
+                        // load db
+                        Toast.makeText(getActivity(), "Loading DB .. ", Toast.LENGTH_LONG).show();
+                        loadDatabaseFromSD();
+                    }
+                }
+            }).create().show();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -309,7 +320,7 @@ public class MomentsFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 } catch (Exception e) {
-                    Log.v(LOG_TAG,e.getMessage());
+                    Log.v(LOG_TAG, e.getMessage());
                 }
                 return null;
             }

@@ -33,7 +33,11 @@ public class AddMomentActivity extends ActionBarActivity implements View.OnClick
         mMomentText = (EditText)findViewById(R.id.moment_text);
         mMomentDate = (EditText)findViewById(R.id.moment_date);
         // default date of the date of the recent moment
-        mMomentDate.setText(MomentsFragment.moments[MomentsFragment.moments.length-1].getDay());
+        if(MomentsFragment.moments != null && MomentsFragment.moments.length > 0) {
+            mMomentDate.setText(MomentsFragment.moments[MomentsFragment.moments.length - 1].getDay());
+        }else{
+            mMomentDate.setText("30/1/2019");
+        }
         mAddBtn = (Button)findViewById(R.id.add_moment_btn);
 
         mAddBtn.setOnClickListener(this);

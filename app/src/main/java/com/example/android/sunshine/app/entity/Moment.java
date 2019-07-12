@@ -16,6 +16,7 @@ public class Moment implements Parcelable, Serializable, Comparable<Moment>{
     private String moment;
     private String day;
     private int icon;
+    // added_by field is to be added
 
     public int get_id() {
         return _id;
